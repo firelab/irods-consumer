@@ -2,6 +2,14 @@
 set -e
 
 IRODS_CONFIG_FILE=/irods.config
+SETUP_IRODS=false
+REJOIN_IRODS=false
+FirstArg="$1"
+
+update_uid_gid() {
+    gosu root chown -R irods:irods /var/lib/irods
+    gosu root chown -R irods:irods /etc/irods
+}
 
 generate_config() {
     DATABASE_HOSTNAME_OR_IP=$(/sbin/ip -f inet -4 -o addr | grep eth | cut -d '/' -f 1 | rev | cut -d ' ' -f 1 | rev)
@@ -24,7 +32,14 @@ generate_config() {
     echo "${IRODS_VAULT_DIRECTORY}" >> ${IRODS_CONFIG_FILE}
 }
 
-if [[ "$1" = 'setup_irods.sh' ]]; then
+if [[ "$FirstArg" = 'setup_irods.sh' ]]; then
+    SETUP_IRODS=true
+fi
+if [[ "$FirstArg" = 'rejoin_irods' ]]; then
+    REJOIN_IRODS=true
+fi
+
+if $SETUP_IRODS; then
     # Generate iRODS config file
     generate_config
 
@@ -39,7 +54,15 @@ if [[ "$1" = 'setup_irods.sh' ]]; then
 
     # Keep container alive
     tail -f /dev/null
+elif $REJOIN_IRODS; then
+    #To restart a consumer after the container has been shut down
+    update_uid_gid
+    gosu root /etc/init.d/irods start
+    echo "Success"
+    echo "You have rejoined the irods network"
+    tail -f /dev/null
 else
+    echo "Hmmm... Somthing went wrong along the way"
     exec "$@"
 fi
 
