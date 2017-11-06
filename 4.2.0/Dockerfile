@@ -59,7 +59,7 @@ COPY . /tmp
 RUN cp /tmp/docker-entrypoint.sh /docker-entrypoint.sh \
     && rm -rf /tmp/*
 ENV DEBIAN_FRONTEND teletype
-VOLUME /var/lib/irods/iRODS/Vault /etc/irods
+VOLUME /var/lib/irods/iRODS/Vault /etc/irods /var/lib/irods/.irods
 
 EXPOSE $IRODS_PORT $IRODS_CONTROL_PLANE_PORT $IRODS_PORT_RANGE_BEGIN-$IRODS_PORT_RANGE_END
 ENTRYPOINT ["/docker-entrypoint.sh"]
