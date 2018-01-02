@@ -29,7 +29,7 @@ RUN set -x \
     && gosu nobody true \
     && apt-get purge -y --auto-remove ca-certificates wget
 
-# install iRODS v4.2.0
+# install iRODS v4.2.1
 RUN apt-get update && apt-get install -y \
     wget \
     libxml2 \
@@ -46,9 +46,9 @@ RUN apt-get update && apt-get install -y \
     irods-externals-jansson2.7-0 \
     irods-externals-libarchive3.1.2-0 \
     irods-externals-zeromq4-14.1.3-0 \
-    irods-icommands=4.2.0 \
-    irods-runtime=4.2.0 \
-    irods-server=4.2.0
+    irods-icommands=4.2.1 \
+    irods-runtime=4.2.1 \
+    irods-server=4.2.1
 
 # default iRODS env
 ENV IRODS_SERVICE_ACCOUNT_NAME=irods
@@ -77,24 +77,11 @@ RUN cd /var/lib/irods \
     && tar -czvf /irods.tar.gz . \
     && cd /
 
-<<<<<<< HEAD
-# Shenanigans to make dockerhub happy
-COPY . /tmp
-RUN cp /tmp/docker-entrypoint.sh /docker-entrypoint.sh \
-    && rm -rf /tmp/*
-ENV DEBIAN_FRONTEND teletype
-VOLUME /var/lib/irods/iRODS/Vault /etc/irods /var/lib/irods/.irods
-=======
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 VOLUME /var/lib/irods /etc/irods
->>>>>>> mjstealey/master
 
 EXPOSE $IRODS_PORT $IRODS_CONTROL_PLANE_PORT $IRODS_PORT_RANGE_BEGIN-$IRODS_PORT_RANGE_END
 ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR "/var/lib/irods"
 
-<<<<<<< HEAD
-CMD ["setup_irods.sh"]
-=======
 CMD ["-i", "run_irods"]
->>>>>>> mjstealey/master

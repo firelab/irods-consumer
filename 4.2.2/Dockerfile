@@ -27,7 +27,11 @@ RUN set -x \
     && rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true \
+<<<<<<< HEAD
 && apt-get purge -y --auto-remove ca-certificates wget
+=======
+    && apt-get purge -y --auto-remove ca-certificates wget
+>>>>>>> mjstealey/master
 
 # install iRODS v4.2.2
 RUN echo "deb http://ftp.debian.org/debian jessie-backports main" \
@@ -74,6 +78,7 @@ ENV IRODS_VAULT_DIRECTORY=/var/lib/irods/iRODS/Vault
 ENV UID_IRODS=998
 ENV GID_IRODS=998
 
+<<<<<<< HEAD
 # Install GSI environment
 RUN sudo apt-get install -y irods-dev irods-runtime myproxy irods-auth-plugin-gsi
 RUN sudo apt-get install -y globus-proxy-utils
@@ -91,6 +96,8 @@ COPY userkey.pem /var/lib/irods/.globus
 COPY .profile /var/lib/irods
 COPY update_json.py /var/lib/irods/packaging
 
+=======
+>>>>>>> mjstealey/master
 # create irods.tar.gz
 RUN cd /var/lib/irods \
     && tar -czvf /irods.tar.gz . \
@@ -103,5 +110,9 @@ EXPOSE $IRODS_PORT $IRODS_CONTROL_PLANE_PORT $IRODS_PORT_RANGE_BEGIN-$IRODS_PORT
 ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR "/var/lib/irods"
 
+<<<<<<< HEAD
 CMD ["-i", "run_irods"]
 
+=======
+CMD ["-i", "run_irods"]
+>>>>>>> mjstealey/master

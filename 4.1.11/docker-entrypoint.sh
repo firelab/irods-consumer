@@ -30,59 +30,54 @@ _irods_tgz() {
         cd /
         gosu root rm -f /var/lib/irods/irods.tar.gz
     fi
+    if [ -z "$(ls -A /etc/irods)" ]; then
+        gosu root cp /etc_irods.tar.gz /etc/irods/etc_irods.tar.gz
+        cd /etc/irods/
+        if $VERBOSE; then
+            echo "!!! populating /etc/irods with initial contents !!!"
+            gosu root tar -zxvf etc_irods.tar.gz
+        else
+            gosu root tar -zxf etc_irods.tar.gz
+        fi
+        cd /
+        gosu root rm -f /etc/irods/etc_irods.tar.gz
+    fi
 }
 
 _generate_config() {
     local OUTFILE=/irods.config
     echo "${IRODS_SERVICE_ACCOUNT_NAME}" > $OUTFILE
     echo "${IRODS_SERVICE_ACCOUNT_GROUP}" >> $OUTFILE
-    echo "${IRODS_SERVER_ROLE}" >> $OUTFILE
-    echo "${IRODS_PROVIDER_ZONE_NAME}" >> $OUTFILE
-    echo "${IRODS_PROVIDER_HOST_NAME}" >> $OUTFILE
     echo "${IRODS_PORT}" >> $OUTFILE
     echo "${IRODS_PORT_RANGE_BEGIN}" >> $OUTFILE
     echo "${IRODS_PORT_RANGE_END}" >> $OUTFILE
+    echo "${IRODS_VAULT_DIRECTORY}" >> $OUTFILE
+    echo "${IRODS_SERVER_ZONE_KEY}" >> $OUTFILE
+    echo "${IRODS_SERVER_NEGOTIATION_KEY}" >> $OUTFILE
     echo "${IRODS_CONTROL_PLANE_PORT}" >> $OUTFILE
+    echo "${IRODS_CONTROL_PLANE_KEY}" >> $OUTFILE
     echo "${IRODS_SCHEMA_VALIDATION}" >> $OUTFILE
     echo "${IRODS_SERVER_ADMINISTRATOR_USER_NAME}" >> $OUTFILE
     echo "yes" >> $OUTFILE
-    echo "${IRODS_SERVER_ZONE_KEY}" >> $OUTFILE
-    echo "${IRODS_SERVER_NEGOTIATION_KEY}" >> $OUTFILE
-    echo "${IRODS_CONTROL_PLANE_KEY}" >> $OUTFILE
+    echo "${IRODS_PROVIDER_HOST_NAME}" >> $OUTFILE
+    echo "${IRODS_PROVIDER_ZONE_NAME}" >> $OUTFILE
+    echo "yes" >> $OUTFILE
     echo "${IRODS_SERVER_ADMINISTRATOR_PASSWORD}" >> $OUTFILE
-    echo "${IRODS_VAULT_DIRECTORY}" >> $OUTFILE
+#    echo "${IRODS_SERVER_ROLE}" >> $OUTFILE
 }
 
-<<<<<<< HEAD
-_fixGSI() {
-    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_authentication_scheme "GSI"
-    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string X509_USER_CERT "/var/lib/irods/.globus/usercert.pem"
-    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string X509_USER_KEY "/var/lib/irods/.globus/userkey.pem"
-    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string X509_CERT_DIR "/var/lib/irods/.globus/certificates"
-    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_ssl_dh_params_file "/var/lib/irods/.globus/dhparams.pem"
-    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string zone_auth_scheme "GSI"
-    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string rcComm_t "/C=US/O=Globus Consortium/OU=Globus Connect Service/CN=60803eee-9fba-11e6-b0de-22000b92c261"
-    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string kerberos_name "irodsserver/vault.firelab.org@FIRELAB.ORG"
-    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string kerberos_keytab "/etc/krb5.keytabo"
-    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string irods_default_resource "firelab"
-    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_default_resource "firelab"
-}
-
-
-=======
->>>>>>> mjstealey/master
 _usage() {
     echo "Usage: ${0} [-h] [-ix run_irods] [-v] [arguments]"
     echo " "
     echo "options:"
     echo "-h                    show brief help"
-    echo "-i run_irods          initialize iRODS 4.2.2 consumer"
-    echo "-x run_irods          use existing iRODS 4.2.2 consumer files"
+    echo "-i run_irods          initialize iRODS 4.1.11 consumer"
+    echo "-x run_irods          use existing iRODS 4.1.11 consumer files"
     echo "-v                    verbose output"
     echo ""
     echo "Example:"
-    echo "  $ docker run --rm mjstealey/irods-consumer:4.2.2 -h           # show help"
-    echo "  $ docker run -d mjstealey/irods-consumer:4.2.2 -i run_irods   # init with default settings"
+    echo "  $ docker run --rm mjstealey/irods-consumer:4.1.11 -h           # show help"
+    echo "  $ docker run -d mjstealey/irods-consumer:4.1.11 -i run_irods   # init with default settings"
     echo ""
     exit 0
 }
@@ -112,12 +107,8 @@ if $RUN_IRODS; then
         _irods_tgz
         _update_uid_gid
         _generate_config
-        gosu root python /var/lib/irods/scripts/setup_irods.py < /irods.config
+        gosu root /var/lib/irods/packaging/setup_irods.sh < /irods.config
         _update_uid_gid
-<<<<<<< HEAD
-        _fixGSI
-=======
->>>>>>> mjstealey/master
         if $VERBOSE; then
             echo "INFO: show ienv"
             gosu irods ienv
@@ -137,8 +128,4 @@ else
     exec "$@"
 fi
 
-<<<<<<< HEAD
 exit 0;
-=======
-exit 0;
->>>>>>> mjstealey/master
