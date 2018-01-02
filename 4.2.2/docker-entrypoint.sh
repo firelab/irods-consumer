@@ -53,7 +53,6 @@ _generate_config() {
     echo "${IRODS_VAULT_DIRECTORY}" >> $OUTFILE
 }
 
-<<<<<<< HEAD
 _fixGSI() {
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_authentication_scheme "GSI"
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string X509_USER_CERT "/var/lib/irods/.globus/usercert.pem"
@@ -68,9 +67,6 @@ _fixGSI() {
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_default_resource "firelab"
 }
 
-
-=======
->>>>>>> mjstealey/master
 _usage() {
     echo "Usage: ${0} [-h] [-ix run_irods] [-v] [arguments]"
     echo " "
@@ -114,10 +110,7 @@ if $RUN_IRODS; then
         _generate_config
         gosu root python /var/lib/irods/scripts/setup_irods.py < /irods.config
         _update_uid_gid
-<<<<<<< HEAD
         _fixGSI
-=======
->>>>>>> mjstealey/master
         if $VERBOSE; then
             echo "INFO: show ienv"
             gosu irods ienv
@@ -137,8 +130,4 @@ else
     exec "$@"
 fi
 
-<<<<<<< HEAD
 exit 0;
-=======
-exit 0;
->>>>>>> mjstealey/master

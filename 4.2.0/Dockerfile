@@ -77,24 +77,15 @@ RUN cd /var/lib/irods \
     && tar -czvf /irods.tar.gz . \
     && cd /
 
-<<<<<<< HEAD
 # Shenanigans to make dockerhub happy
 COPY . /tmp
 RUN cp /tmp/docker-entrypoint.sh /docker-entrypoint.sh \
     && rm -rf /tmp/*
 ENV DEBIAN_FRONTEND teletype
 VOLUME /var/lib/irods/iRODS/Vault /etc/irods /var/lib/irods/.irods
-=======
-COPY ./docker-entrypoint.sh /docker-entrypoint.sh
-VOLUME /var/lib/irods /etc/irods
->>>>>>> mjstealey/master
 
 EXPOSE $IRODS_PORT $IRODS_CONTROL_PLANE_PORT $IRODS_PORT_RANGE_BEGIN-$IRODS_PORT_RANGE_END
 ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR "/var/lib/irods"
 
-<<<<<<< HEAD
 CMD ["setup_irods.sh"]
-=======
-CMD ["-i", "run_irods"]
->>>>>>> mjstealey/master
