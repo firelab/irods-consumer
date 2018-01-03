@@ -54,17 +54,21 @@ _generate_config() {
 }
 
 _fixGSI() {
-    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_authentication_scheme "GSI"
+    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_authentication_scheme "PAM"
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string X509_USER_CERT "/var/lib/irods/.globus/usercert.pem"
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string X509_USER_KEY "/var/lib/irods/.globus/userkey.pem"
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string X509_CERT_DIR "/var/lib/irods/.globus/certificates"
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_ssl_dh_params_file "/var/lib/irods/.globus/dhparams.pem"
+    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_ssl_certificate_chain_file "/var/lib/irods/.globus/usercert.pem"
+    python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_ssl_certificate_key_file "/var/lib/irods/.globus/userkey.pem"
     python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string zone_auth_scheme "GSI"
     python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string rcComm_t "/C=US/O=Globus Consortium/OU=Globus Connect Service/CN=60803eee-9fba-11e6-b0de-22000b92c261"
-    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string kerberos_name "irodsserver/vault.firelab.org@FIRELAB.ORG"
-    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string kerberos_keytab "/etc/krb5.keytabo"
+    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string KerberosServicePrincipal "irodsserver/vault.firelab.org@FIRELAB.ORG"
+    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string KerberosKeytab "/etc/krb5.keytab"
+    python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string environment_variables,KRB5_KTNAME "/etc/krb5.keytab"
     python /var/lib/irods/packaging/update_json.py /etc/irods/server_config.json string irods_default_resource "firelab"
     python /var/lib/irods/packaging/update_json.py /var/lib/irods/.irods/irods_environment.json string irods_default_resource "firelab"
+    gosu root update-ca-certificates
 }
 
 _usage() {

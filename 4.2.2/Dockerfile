@@ -97,6 +97,7 @@ ENV KERBEROS_NAME=irodsserver/vault.firelab.org@FIRELAB.ORG \
 #Install PAM Authentication
 RUN sudo apt-get install -y libpam-krb5
 
+COPY cert.crt /usr/local/share/ca-certificates
 COPY irods /etc/pam.d
 COPY krb5.keytab /etc
 COPY krb5.conf /etc
