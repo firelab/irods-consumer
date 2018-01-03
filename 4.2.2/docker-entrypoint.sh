@@ -14,7 +14,7 @@ _update_uid_gid() {
     gosu root groupmod -g ${GID_IRODS} irods
     # update directories
     gosu root chown -R irods:irods /var/lib/irods
-    gosu root chown -R irods:irods /etc/irods
+    gosu root chown -R irods:irods /etc/irods /etc/krb5.keytab
 }
 
 _irods_tgz() {
