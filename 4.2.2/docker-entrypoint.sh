@@ -135,6 +135,7 @@ if $RUN_IRODS; then
     if $EXISTING; then
         _update_uid_gid
         gosu root service irods start
+        gosu root update-ca-certificates
         gosu root tail -f /dev/null
     fi
 else
